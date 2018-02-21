@@ -1,0 +1,102 @@
+function init() {
+    return new Registry().state;
+}
+    
+
+
+/*function init (input) {
+    var registry = { a:[0,0], b:[0,0], c:[0,0], d:[0,0], e:[0,0], f:[0,0], g:[0,0], h:[0,0], i:[0,0], k:[0,0], l:[0,0], m:[0,0], n:[0,0], o:[0,0], p:[0,0],}
+    var recovery = 0;
+    for (var z = 0; z<input.length; z++){
+        switch (input[z][0]) {
+            case "snd":
+                recovery = registry[input[z][1]][0];
+                break;
+            case "rcv":
+                if (registry[input[z][1]] !==0) {
+                    return recovery;
+                }
+                break;
+            case "jgz":
+                if (typeof input[z][2]=== "string") {
+                    z += jump(registry[input[z][1]], registry[input[z][2]][0]);
+                } else {
+                    z += jump(registry[input[z][1]], input[z][2]);
+                }
+                z = z % input.length;
+                break;
+            default:
+                if(typeof input[z][2]=== "string") {
+                    registry[input[z][1]] = execute(input[z][0], registry[input[z][1]], registry[input[z][2]][0]);
+                } else {
+                    registry[input[z][1]] = execute(input[z][0], registry[input[z][1]], input[z][2]);
+                }
+                    
+        }
+    }
+    return registry;
+}*/
+
+class Registry {
+    constructor() {
+        this.state = { a:[0,0], b:[0,0], c:[0,0], d:[0,0], e:[0,0], f:[0,0], g:[0,0], h:[0,0], i:[0,0], k:[0,0], l:[0,0], m:[0,0], n:[0,0], o:[0,0], p:[0,0]};
+    }
+}
+
+function execute(instruction, register, val) {
+    switch (instruction) {
+        case "snd":
+            return play(register, val);
+        case "set":
+            return set(register, val);
+        case "add":
+            return add(register, val);
+        case "mul":
+            return mul(register, val);
+        case "mod":
+            return mod(register, val);
+        case "rcv":
+            return recover(register);
+        case "jump":
+            return jump(register,val);
+    }
+    alert("Error in function execute");
+    return register; 
+}
+
+function play (register) {
+    register[1]=register[0];
+    return register;
+}
+
+function set(register, val) {
+    register[0] = val;
+    return register;
+}
+
+function add(register, val) {
+    register[0]+=val;
+    return register;
+}
+
+function mul(register, val) {
+    register[0]*=val;
+    return register;
+}
+
+function mod(register, val) {
+    register[0] %= val;
+    return register;
+}
+
+function recover(register) {
+    return register[1];
+}
+
+function jump(register, val) {
+    if(register[0]>0) {
+        val--;
+        return val;
+    }
+    return 0;
+}
