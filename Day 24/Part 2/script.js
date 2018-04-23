@@ -1,6 +1,6 @@
 function init(input) {
     var strengths = [];
-    var bridges = longestBridges(allBridges(0, input));
+    var bridges = longestBridges(allBridgesV3(input, [], 0));
     for (var i = 0; i<bridges.length; i++) {
         strengths.push(bridgeStrength(bridges[i]));
     }
@@ -37,8 +37,41 @@ function allBridges(openPort, components) {
     return bridges;
 }
 
+function allBridgesV2(openPort, components) {
+    var matches = allMatches(openPort, components);
+    var bridges = joinMatches([], matches);
+    for (var i = 0; i<bridges.length; i++) {
+        var bridge = bridges[i];
+        bridges = bridges.concat(joinMatches(bridge, allBridgesV2(findOpenPort(bridge), removeBridge(bridge, components))));
+    }
+    return bridges;    
+}
 
-function removeBridge(bridge, components) {
+function allBridgesV3(components, built, openPort) {
+    var bridges = joinMatches(built, allMatches(openPort, components));
+    for(var i = 0; i<bridges.length; i++) {
+        var bridge = bridges[i];
+        bridges = bridges.concat(allBridgesV3(removeBridge(bridge, components), bridge, findOpenPort(bridge)));
+    }
+    return bridges;    
+}
+
+function uniqueBridges(bridges) {
+    var strings = [];
+    var unique = [];
+    var string;
+    bridges.forEach(function(bridge) {
+        string = bridge.join();
+        if(!inArray(strings, string)) {
+            strings.push(string);
+            unique.push(bridge);
+        }
+    });
+    return unique;
+}
+
+function removeBridge(bridge, pool) {
+    components = pool.slice();
     for (var i = 0; i<bridge.length; i++) {
         components = removeComponent(components, bridge[i]);
     }
@@ -46,6 +79,7 @@ function removeBridge(bridge, components) {
 }
 
 function removeComponent(components, remove) {
+    //components = pool.slice();
     for (var i = 0; i<components.length; i++) {
         if(matchComponent(components[i], remove)) {
             components.splice(i, 1);
@@ -115,6 +149,15 @@ function longestBridges(bridges) {
 function matchable(openPort, components) {
     for (var i = 0; i<components.length; i++) {
         if (canConnect(openPort, components[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function inArray(arr, a) {
+    for (var i = 0; i<arr.length; i++) {
+        if (arr[i]===a) {
             return true;
         }
     }
