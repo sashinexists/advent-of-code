@@ -88,16 +88,16 @@ function init(input) {
         step() {
             switch(this.direction) {
                 case "north":
-                    this.position.y+=1;
+                    this.position.y++;
                     break;
                 case "east":
-                    this.position.x+=1;
+                    this.position.x++;
                     break;
                 case "south":
-                    this.position.y-=1;
+                    this.position.y--;
                     break;
                 case "west":
-                    this.position.x-=1;
+                    this.position.x--;
                     break;
                 default:
                     console.log("ERROR");
