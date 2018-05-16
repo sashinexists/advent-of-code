@@ -1,3 +1,10 @@
+class Instruction {
+    constructor(input) {
+        this.turnDirection = input[0] === "R" ? "right" : "left";
+        this.numberOfBlocks = Number(input.slice(1));
+    }
+}
+
 function init(input) {
     const PERSON = {        
         direction: "north",
@@ -5,6 +12,10 @@ function init(input) {
         position: {
             x: 0,
             y: 0,
+        },
+
+        turn(direction) {
+            direction === "right" ? this.turnRight() : this.turnLeft();
         },
 
         turnRight() {
@@ -68,13 +79,19 @@ function init(input) {
             }
         },
 
+        follow(instruction) {
+            const {turnDirection, numberOfBlocks} = instruction;
+            this.turn(turnDirection);
+            this.walk(numberOfBlocks);
+        },
+
         getDistanceFromStartingPosition() {
             return Math.abs(this.position.y)+Math.abs(this.position.x);
         }
     }
-    input.forEach(function(instruction) {
-        instruction[0] === "R" ? PERSON.turnRight() : PERSON.turnLeft();
-        PERSON.walk(Number(instruction[1]));
+    input.forEach(function(command) {
+        const INSTRUCTION = new Instruction(command);
+        PERSON.follow(INSTRUCTION);
     })
     return PERSON.getDistanceFromStartingPosition();
 }
@@ -82,7 +99,7 @@ function init(input) {
 function run() {
     const TEST_INPUT = ["R5", "L5", "R5", "R3"];
     const INPUT = ["R1", "R1", "R3", "R1", "R1", "L2", "R5", "L2", "R5", "R1", "R4", "L2", "R3", "L3", "R4", "L5", "R4", "R4", "R1", "L5", "L4", "R5", "R3", "L1", "R4", "R3", "L2", "L1", "R3", "L4", "R3", "L2", "R5", "R190", "R3", "R5", "L5", "L1", "R54", "L3", "L4", "L1", "R4", "R1", "R3", "L1", "L1", "R2", "L2", "R2", "R5", "L3", "R4", "R76", "L3", "R4", "R191", "R5", "R5", "L5", "L4", "L5", "L3", "R1", "R3", "R2", "L2", "L2", "L4", "L5", "L4", "R5", "R4", "R4", "R2", "R3", "R4", "L3", "L2", "R5", "R3", "L2", "L1", "R2", "L3", "R2", "L1", "L1", "R1", "L3", "R5", "L5", "L1", "L2", "R5", "R3", "L3", "R3", "R5", "R2", "R5", "R5", "L5", "L5", "R2", "L3", "L5", "L2", "L1", "R2", "R2", "L2", "R2", "L3", "L2", "R3", "L5", "R4", "L4", "L5", "R3", "L4", "R1", "R3", "R2", "R4", "L2", "L3", "R2", "L5", "R5", "R4", "L2", "R4", "L1", "L3", "L1", "L3", "R1", "R2", "R1", "L5", "R5", "R3", "L3", "L3", "L2", "R4", "R2", "L5", "L1", "L1", "L5", "L4", "L1", "L1", "R1"];
-    console.log(init(TEST_INPUT));
+    console.log(init(INPUT));
 }
 
 run();
