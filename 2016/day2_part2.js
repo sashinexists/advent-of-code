@@ -8,7 +8,7 @@ function init(input) {
 
         isValid() {
             const ROW = KEYPAD[this.y];
-            return !!ROW ? ROW[this.x] && ROW[this.x] !== " " : false;
+            return ROW && ROW[this.x] && ROW[this.x] !== " ";
         },
 
         move(direction) {
