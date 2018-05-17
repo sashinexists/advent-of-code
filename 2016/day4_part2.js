@@ -22,15 +22,24 @@ class Room {
     verify() {
         return this.checksum === this.determineExpectedChecksum();
     }
+
+    decryptName() {
+        return this.encryptedName
+            .split("")
+            .map(char => char === "-" ? " " : decryptLetter(char, this.sectorID))
+            .join("");
+            
+    }
 }
 
 function init(input) {
     let sectorIDSum = 0;
-    input.forEach((roomKey)=>{
+    const KEY_TO_STORAGE = input.find((roomKey)=>{
         const ROOM = new Room(roomKey);
-        sectorIDSum += ROOM.verify() ? ROOM.sectorID : 0;
+        return ROOM.verify() && ROOM.decryptName() === "northpole object storage";
     })
-    return sectorIDSum;
+    const NORTH_POLE_OBJECT_STORAGE = new Room(KEY_TO_STORAGE);
+    return NORTH_POLE_OBJECT_STORAGE.sectorID;
 }
 
 function findCharactersWithFrequency(str, frequency) {
@@ -72,6 +81,15 @@ function findFrequencyOfEachCharacter(str) {
     const COUNT = {};
     STRING_ARRAY.forEach(char => COUNT[char] ? COUNT[char]+=1 : COUNT[char]=1);
     return COUNT;
+}
+
+function decryptLetter(letter, key) {
+    const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+    let position = ALPHABET.indexOf(letter) + key;
+    while(position>=ALPHABET.length) {
+        position -= ALPHABET.length;
+    }
+    return ALPHABET[position];
 }
 
 function readInput() {
